@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>タスク一覧</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 50px;
+            background-color: #f9f9f9;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        .btn {
+            padding: 8px 15px;
+            margin: 5px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .btn-primary {
+            background: #007bff;
+            color: white;
+        }
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+        .btn-warning {
+            background: #ffc107;
+            color: #212529;
+        }
+        .btn:hover {
+            opacity: 0.8;
+        }
+        .status-badge {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .status-未着手 { background: #6c757d; color: white; }
+        .status-進行中 { background: #17a2b8; color: white; }
+        .status-完了 { background: #28a745; color: white; }
+        .add-button {
+            text-align: right;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>タスク一覧</h1>
+        
+        <div class="add-button">
+            <a href="/tasks/add" class="btn btn-success">新規タスク追加</a>
+        </div>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>タスク名</th>
+                    <th>ステータス</th>
+                    <th>作成日</th>
+                    <th>完了日</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="task : ${tasks}">
+                    <td th:text="${task.taskId}"></td>
+                    <td th:text="${task.taskName}"></td>
+                    <td>
+                        <span th:class="'status-badge status-' + ${task.taskStatus}" 
+                              th:text="${task.taskStatus}"></span>
+                    </td>
+                    <td th:text="${task.startDate}"></td>
+                    <td th:text="${task.endDate != null ? task.endDate : '未完了'}"></td>
+                    <td>
+                        <a th:href="@{/tasks/edit/{id}(id=${task.taskId})}" 
+                           class="btn btn-warning">編集</a>
+                    </td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(tasks)}">
+                    <td colspan="6" style="text-align: center;">登録されているタスクがありません</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

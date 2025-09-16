@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.dao.TaskMapper">
+
+	<!-- タスクIDでタスク情報を取得する（SELECT） -->
+	<select id="findByTaskId" parameterType="java.lang.Integer"
+		resultType="com.example.demo.entity.TaskEntity">
+		SELECT
+		task_id,
+		task_name,
+		task_status,
+		start_date,
+		end_date
+		FROM
+		task_tbl
+		WHERE
+		task_id = #{taskId}
+	</select>
+
+	<!-- 全タスク情報を取得する（SELECT） -->
+	<select id="findAll"
+		resultType="com.example.demo.entity.TaskEntity">
+		SELECT
+		task_id,
+		task_name,
+		task_status,
+		start_date,
+		end_date
+		FROM
+		task_tbl
+		ORDER BY
+		task_id
+	</select>
+
+	<!-- タスク状況で絞り込んでタスク情報を取得する（SELECT） -->
+	<select id="findByStatus" parameterType="java.lang.String"
+		resultType="com.example.demo.entity.TaskEntity">
+		SELECT
+		task_id,
+		task_name,
+		task_status,
+		start_date,
+		end_date
+		FROM
+		task_tbl
+		WHERE
+		task_status = #{taskStatus}
+		ORDER BY
+		task_id
+	</select>
+
+	<!-- タスク情報を新規登録する（INSERT） -->
+	<insert id="insertTask"
+		parameterType="com.example.demo.entity.TaskEntity">
+		INSERT INTO task_tbl (
+		task_name,
+		task_status,
+		start_date,
+		end_date
+		) VALUES (
+		#{taskName},
+		#{taskStatus},
+		#{startDate},
+		#{endDate}
+		)
+	</insert>
+
+	<!-- タスク情報を更新する（UPDATE） -->
+	<update id="updateTask"
+		parameterType="com.example.demo.entity.TaskEntity">
+		UPDATE task_tbl
+		SET
+		task_name = #{taskName},
+		task_status = #{taskStatus},
+		start_date = #{startDate},
+		end_date = #{endDate}
+		WHERE
+		task_id = #{taskId}
+	</update>
+
+	<!-- タスク情報を削除する（DELETE） -->
+	<delete id="deleteTask" parameterType="java.lang.Integer">
+		DELETE FROM task_tbl
+		WHERE task_id = #{taskId}
+	</delete>
+
+</mapper>

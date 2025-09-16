@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>タスク編集</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 50px;
+            background-color: #f9f9f9;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 14px;
+        }
+        .btn {
+            padding: 10px 20px;
+            margin: 5px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 14px;
+        }
+        .btn-primary {
+            background: #007bff;
+            color: white;
+        }
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+        .btn:hover {
+            opacity: 0.8;
+        }
+        .button-group {
+            text-align: center;
+            margin-top: 30px;
+        }
+        .required {
+            color: red;
+        }
+        .error {
+            color: red;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+        .success {
+            color: green;
+            font-size: 14px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .task-id {
+            background-color: #f8f9fa;
+            color: #6c757d;
+            font-weight: bold;
+        }
+        .delete-section {
+            border-top: 2px solid #dee2e6;
+            padding-top: 20px;
+            margin-top: 30px;
+            text-align: center;
+        }
+        .delete-warning {
+            color: #dc3545;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>タスク編集</h1>
+        
+        <div th:if="${message}" class="success" th:text="${message}"></div>
+        
+        <form th:action="@{/tasks/edit}" th:object="${task}" method="post">
+            <!-- 隠しフィールドでタスクIDを送信 -->
+            <input type="hidden" th:field="*{taskId}">
+            
+            <div class="form-group">
+                <label for="taskId">タスクID</label>
+                <input type="text" id="taskIdDisplay" th:value="*{taskId}" 
+                       class="task-id" readonly>
+            </div>
+            
+            <div class="form-group">
+                <label for="taskName">タスク名 <span class="required">*</span></label>
+                <input type="text" id="taskName" th:field="*{taskName}" 
+                       placeholder="タスク名を入力してください" maxlength="20" required>
+                <div th:if="${#fields.hasErrors('taskName')}" 
+                     th:errors="*{taskName}" class="error"></div>
+            </div>
+            
+            <div class="form-group">
+                <label for="taskStatus">ステータス <span class="required">*</span></label>
+                <select id="taskStatus" th:field="*{taskStatus}" required>
+                    <option value="">選択してください</option>
+                    <option value="未着手">未着手</option>
+                    <option value="進行中">進行中</option>
+                    <option value="完了">完了</option>
+                </select>
+                <div th:if="${#fields.hasErrors('taskStatus')}" 
+                     th:errors="*{taskStatus}" class="error"></div>
+            </div>
+            
+            <div class="form-group">
+                <label for="startDate">作成日</label>
+                <input type="date" id="startDate" th:field="*{startDate}">
+            </div>
+            
+            <div class="form-group">
+                <label for="endDate">完了日</label>
+                <input type="date" id="endDate" th:field="*{endDate}">
+            </div>
+            
+            <div class="button-group">
+                <button type="submit" class="btn btn-primary">更新</button>
+                <a href="/tasks/list" class="btn btn-secondary">キャンセル</a>
+            </div>
+        </form>
+        
+        <!-- 削除セクション -->
+        <div class="delete-section">
+            <div class="delete-warning">
+                ⚠️ 危険: この操作は取り消せません
+            </div>
+            <form th:action="@{/tasks/delete}" method="post" 
+                  onsubmit="return confirm('本当にこのタスクを削除しますか？');">
+                <input type="hidden" name="taskId" th:value="${task.taskId}">
+                <button type="submit" class="btn btn-danger">タスクを削除</button>
+            </form>
+        </div>
+    </div>
+    
+    <script>
+        // ステータスが「完了」に変更された時に完了日を自動設定
+        document.getElementById('taskStatus').addEventListener('change', function() {
+            const endDateField = document.getElementById('endDate');
+            if (this.value === '完了' && !endDateField.value) {
+                const today = new Date().toISOString().split('T')[0];
+                endDateField.value = today;
+            }
+        });
+    </script>
+</body>
+</html>

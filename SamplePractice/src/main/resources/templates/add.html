@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>タスク新規追加</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 50px;
+            background-color: #f9f9f9;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 14px;
+        }
+        .btn {
+            padding: 10px 20px;
+            margin: 5px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 14px;
+        }
+        .btn-primary {
+            background: #007bff;
+            color: white;
+        }
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+        .btn:hover {
+            opacity: 0.8;
+        }
+        .button-group {
+            text-align: center;
+            margin-top: 30px;
+        }
+        .required {
+            color: red;
+        }
+        .error {
+            color: red;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+        .success {
+            color: green;
+            font-size: 14px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>タスク新規追加</h1>
+        
+        <div th:if="${message}" class="success" th:text="${message}"></div>
+        
+        <form th:action="@{/tasks/add}" th:object="${task}" method="post">
+            <div class="form-group">
+                <label for="taskName">タスク名 <span class="required">*</span></label>
+                <input type="text" id="taskName" th:field="*{taskName}" 
+                       placeholder="タスク名を入力してください" maxlength="20" required>
+                <div th:if="${#fields.hasErrors('taskName')}" 
+                     th:errors="*{taskName}" class="error"></div>
+            </div>
+            
+            <div class="form-group">
+                <label for="taskStatus">ステータス <span class="required">*</span></label>
+                <select id="taskStatus" th:field="*{taskStatus}" required>
+                    <option value="">選択してください</option>
+                    <option value="未着手">未着手</option>
+                    <option value="進行中">進行中</option>
+                    <option value="完了">完了</option>
+                </select>
+                <div th:if="${#fields.hasErrors('taskStatus')}" 
+                     th:errors="*{taskStatus}" class="error"></div>
+            </div>
+            
+            <div class="form-group">
+                <label for="startDate">作成日</label>
+                <input type="date" id="startDate" th:field="*{startDate}">
+            </div>
+            
+            <div class="form-group">
+                <label for="endDate">完了日</label>
+                <input type="date" id="endDate" th:field="*{endDate}">
+            </div>
+            
+            <div class="button-group">
+                <button type="submit" class="btn btn-primary">登録</button>
+                <a href="/tasks/list" class="btn btn-secondary">キャンセル</a>
+            </div>
+        </form>
+    </div>
+    
+    <script>
+        // 今日の日付を作成日のデフォルトに設定
+        document.addEventListener('DOMContentLoaded', function() {
+            const today = new Date().toISOString().split('T')[0];
+            const startDateField = document.getElementById('startDate');
+            if (!startDateField.value) {
+                startDateField.value = today;
+            }
+        });
+    </script>
+</body>
+</html>
