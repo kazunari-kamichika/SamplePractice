@@ -36,6 +36,7 @@ public class TaskController {
 	public String showTaskList(Model model) {
 		List<TaskEntity> tasks = taskService.getAllTasks();
 		model.addAttribute("tasks", tasks);
+		
 		return "list";
 	}
 
