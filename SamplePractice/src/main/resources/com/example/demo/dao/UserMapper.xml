@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.demo.dao.UserMapper">
+
+    <!-- 結果マッピング定義 -->
+    <resultMap id="UserResultMap" type="com.example.demo.entity.UserEntity">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="kana" column="kana"/>
+        <result property="email" column="email"/>
+        <result property="department" column="department"/>
+        <result property="birthDate" column="birth_date"/>
+        <result property="hireDate" column="hire_date"/>
+        <result property="timestamp" column="timestamp"/>
+        <result property="deleteFlag" column="delete_flag"/>
+    </resultMap>
+
+    <!-- 全ユーザー取得 -->
+    <select id="findAll" resultMap="UserResultMap">
+        SELECT 
+            id,
+            name,
+            kana,
+            email,
+            department,
+            birth_date,
+            hire_date,
+            timestamp,
+            delete_flag
+        FROM users 
+        WHERE delete_flag = false
+        ORDER BY id
+    </select>
+
+    <!-- ID指定でユーザー取得（課題用：呼び出し階層確認対象） -->
+    <select id="findById" parameterType="Long" resultMap="UserResultMap">
+        SELECT 
+            id,
+            name,
+            kana,
+            email,
+            department,
+            birth_date,
+            hire_date,
+            timestamp,
+            delete_flag
+        FROM users 
+        WHERE id = #{id}
+        AND delete_flag = false
+    </select>
+
+    <!-- ユーザー登録 -->
+    <insert id="insert" parameterType="com.example.demo.entity.UserEntity">
+        <selectKey keyProperty="id" resultType="Long" order="BEFORE">
+            SELECT COALESCE(MAX(id), 0) + 1 FROM users
+        </selectKey>
+        INSERT INTO users (
+            id,
+            name,
+            kana,
+            email,
+            department,
+            birth_date,
+            hire_date,
+            timestamp,
+            delete_flag
+        ) VALUES (
+            #{id},
+            #{name},
+            #{kana},
+            #{email},
+            #{department},
+            #{birthDate},
+            #{hireDate},
+            CURRENT_TIMESTAMP,
+            false
+        )
+    </insert>
+
+    <!-- ユーザー更新 -->
+    <update id="update" parameterType="com.example.demo.entity.UserEntity">
+        UPDATE users SET
+            name = #{name},
+            kana = #{kana},
+            email = #{email},
+            department = #{department},
+            birth_date = #{birthDate},
+            hire_date = #{hireDate},
+            timestamp = CURRENT_TIMESTAMP
+        WHERE id = #{id}
+        AND delete_flag = false
+    </update>
+
+    <!-- ユーザー削除（論理削除） -->
+    <update id="delete" parameterType="Long">
+        UPDATE users SET
+            delete_flag = true,
+            timestamp = CURRENT_TIMESTAMP
+        WHERE id = #{id}
+    </update>
+
+</mapper>

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ユーザー一覧 - ユーザー管理システム</title>
+    <link th:href="@{/css/style.css}" rel="stylesheet">
+</head>
+<body>
+    <div class="header">
+        <h1>ユーザー管理システム</h1>
+    </div>
+    
+    <div class="content-container">
+        <div class="nav">
+            <a th:href="@{/users/list}">ユーザー一覧</a>
+            <a th:href="@{/users/register}">新規登録</a>
+        </div>
+        
+        <!-- 成功メッセージ -->
+        <div th:if="${successMessage}" class="success" th:text="${successMessage}"></div>
+        
+        <!-- エラーメッセージ -->
+        <div th:if="${errorMessage}" class="error" th:text="${errorMessage}"></div>
+        
+        <h2>ユーザー一覧</h2>
+        
+        <p>総件数: <span th:text="${totalCount}">0</span>件</p>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>名前</th>
+                    <th>カナ</th>
+                    <th>メール</th>
+                    <th>部署</th>
+                    <th>生年月日</th>
+                    <th>入社日</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="user : ${userList}">
+                    <td th:text="${user.id}"></td>
+                    <td th:text="${user.name}"></td>
+                    <td th:text="${user.kana}"></td>
+                    <td th:text="${user.email}"></td>
+                    <td th:text="${user.department}"></td>
+                    <td th:text="${user.birthDate}"></td>
+                    <td th:text="${user.hireDate}"></td>
+                    <td>
+                        <a th:href="@{/users/detail/{id}(id=${user.id})}" class="btn btn-primary">詳細</a>
+                        <a th:href="@{/users/edit/{id}(id=${user.id})}" class="btn btn-secondary">編集</a>
+                        <form th:action="@{/users/delete/{id}(id=${user.id})}" method="post" style="display: inline;">
+                            <button type="submit" class="btn btn-danger" onclick="return confirm('削除しますか？')">削除</button>
+                        </form>
+                    </td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(userList)}">
+                    <td colspan="8">ユーザーが見つかりません</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

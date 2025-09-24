@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ユーザー詳細 - ユーザー管理システム</title>
+    <link th:href="@{/css/style.css}" rel="stylesheet">
+</head>
+<body>
+    <div class="header">
+        <h1>ユーザー管理システム</h1>
+    </div>
+    
+    <div class="content-container">
+        <div class="nav">
+            <a th:href="@{/users/list}">ユーザー一覧</a>
+            <a th:href="@{/users/register}">新規登録</a>
+        </div>
+        
+        <h2>ユーザー詳細</h2>
+        
+        <div th:if="${user}">
+            <table class="detail-table">
+                <tr>
+                    <th>ID</th>
+                    <td th:text="${user.id}"></td>
+                </tr>
+                <tr>
+                    <th>名前</th>
+                    <td th:text="${user.name}"></td>
+                </tr>
+                <tr>
+                    <th>カナ</th>
+                    <td th:text="${user.kana}"></td>
+                </tr>
+                <tr>
+                    <th>メール</th>
+                    <td th:text="${user.email}"></td>
+                </tr>
+                <tr>
+                    <th>部署</th>
+                    <td th:text="${user.department}"></td>
+                </tr>
+                <tr>
+                    <th>生年月日</th>
+                    <td th:text="${user.birthDate}"></td>
+                </tr>
+                <tr>
+                    <th>入社日</th>
+                    <td th:text="${user.hireDate}"></td>
+                </tr>
+            </table>
+            
+            <div style="margin-top: 20px;">
+                <a th:href="@{/users/edit/{id}(id=${user.id})}" class="btn btn-secondary">編集</a>
+                <a th:href="@{/users/list}" class="btn btn-primary">一覧に戻る</a>
+            </div>
+        </div>
+        
+        <div th:unless="${user}">
+            <p class="error">ユーザーが見つかりません。</p>
+            <a th:href="@{/users/list}" class="btn btn-primary">一覧に戻る</a>
+        </div>
+    </div>
+</body>
+</html>
